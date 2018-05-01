@@ -51,6 +51,11 @@ class JsonDumpValidatorTest extends TestCase {
 				'Duplicate entity Q42 on line 3, already encountered on line 2',
 				"[\n" . '{"id":"Q42"},' . "\n" . '{"id":"Q42"}' . "\n]\n",
 			],
+			'Duplicate entity id, detection disabled' => [
+				true,
+				"[\n" . '{"id":"Q42"},' . "\n" . '{"id":"Q42"}' . "\n]\n",
+				false
+			],
 			'missing trailing comma' => [
 				'Invalid JSON closing on line 3: Expected "]\n", but got "{\"id\":\"Q33\"}"',
 				"[\n" . '{"id":"Q42"}' . "\n" . '{"id":"Q33"}',
@@ -77,7 +82,7 @@ class JsonDumpValidatorTest extends TestCase {
 	/**
 	 * @dataProvider provideJson
 	 */
-	public function testValidate( $expected, $json ) {
+	public function testValidate( $expected, $json, $checkForDuplicates = true ) {
 		if ( is_string( $json ) ) {
 			$file = tmpfile();
 			fwrite( $file, $json );
@@ -86,7 +91,7 @@ class JsonDumpValidatorTest extends TestCase {
 		}
 		rewind( $file );
 
-		$jsonDumpValidator = new JsonDumpValidator();
+		$jsonDumpValidator = new JsonDumpValidator( $checkForDuplicates );
 		$result = $jsonDumpValidator->validate( $file );
 
 		$this->assertSame( $expected, $result );

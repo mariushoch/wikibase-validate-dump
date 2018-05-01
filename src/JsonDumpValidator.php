@@ -11,9 +11,21 @@ namespace Wikibase\DumpValidator;
 class JsonDumpValidator {
 
 	/**
+	 * @var bool
+	 */
+	private $checkForDuplicates;
+
+	/**
 	 * @var int[] Entity id -> line number map showing already encountered entities
 	 */
 	private $encountered = [];
+
+	/**
+	 * @param bool $checkForDuplicates Whether duplicates should be checked
+	 */
+	public function __construct( $checkForDuplicates ) {
+		$this->checkForDuplicates = $checkForDuplicates;
+	}
 
 	/**
 	 * @param resource $file
@@ -82,11 +94,14 @@ class JsonDumpValidator {
 		if ( !isset( $entity['id'] ) ) {
 			return "Missing entity id on line $lineNumber";
 		}
-		$id = $entity['id'];
-		if ( isset( $this->encountered[$id] ) ) {
-			return "Duplicate entity $id on line $lineNumber, already encountered on line " . $this->encountered[$id];
+
+		if ( $this->checkForDuplicates ) {
+			$id = $entity['id'];
+			if ( isset( $this->encountered[$id] ) ) {
+				return "Duplicate entity $id on line $lineNumber, already encountered on line " . $this->encountered[$id];
+			}
+			$this->encountered[$id] = $lineNumber;
 		}
-		$this->encountered[$id] = $lineNumber;
 
 		return true;
 	}
