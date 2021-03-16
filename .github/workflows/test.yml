@@ -2,7 +2,7 @@ name: Test
 on: push
 
 jobs:
-  run_tests:
+  run_phpunit_tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -12,3 +12,11 @@ jobs:
         run: ./composer update
       - name: Run tests
         run: ./composer test
+  cli_run_with_sample_data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run with invalid data
+        run: ! php validateJsonDump.php tests/wikidata-20210310-lexemes-head-n10.json
+      - name: Run with valid data
+        run: php validateJsonDump.php compress.zlib://tests/wikidata-20171028-all-first2500.json.gz
