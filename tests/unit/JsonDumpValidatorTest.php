@@ -51,6 +51,10 @@ class JsonDumpValidatorTest extends TestCase {
 				'Duplicate entity Q42 on line 3, already encountered on line 2',
 				"[\n" . '{"id":"Q42"},' . "\n" . '{"id":"Q42"}' . "\n]\n",
 			],
+			'Duplicate lexeme id' => [
+				"Duplicate entity L4 on line 3, already encountered on line 2",
+				"[\n" . '{"type":"lexeme","id":"L4","lemmas":"blah"},' . "\n" . '{"type":"lexeme","id":"L4"}' . "\n]\n",
+			],
 			'Duplicate entity id, detection disabled' => [
 				true,
 				"[\n" . '{"id":"Q42"},' . "\n" . '{"id":"Q42"}' . "\n]\n",
@@ -75,6 +79,14 @@ class JsonDumpValidatorTest extends TestCase {
 			'valid dump' => [
 				true,
 				fopen( 'compress.zlib://' . __DIR__ . '/../wikidata-20171028-all-first2500.json.gz', 'r' ),
+			],
+			'invalid lexeme dump' => [
+				"Couldn't decode entity on line 2: Syntax error",
+				fopen( __DIR__ . '/../wikidata-20210310-lexemes-head-n10.json', 'r' ),
+			],
+			'valid lexeme dump' => [
+				true,
+				fopen( 'compress.zlib://' . __DIR__ . '/../wikidata-20210310-lexemes-first2500.json.gz', 'r' ),
 			],
 		];
 	}
