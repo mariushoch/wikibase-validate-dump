@@ -1,0 +1,14 @@
+name: Test
+on: push
+
+jobs:
+  run_testsh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install composer 2
+        run: curl 'https://getcomposer.org/composer-2.phar' > composer && chmod +x composer
+      - name: Install dependencies
+        run: ./composer update
+      - name: Run tests
+        run: ./composer test
