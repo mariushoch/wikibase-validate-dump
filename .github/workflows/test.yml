@@ -17,6 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Run with invalid data
-        run: ! php validateJsonDump.php tests/wikidata-20210310-lexemes-head-n10.json
+        run: sh -c '! php validateJsonDump.php tests/wikidata-20210310-lexemes-head-n10.json'
       - name: Run with valid data
         run: php validateJsonDump.php compress.zlib://tests/wikidata-20171028-all-first2500.json.gz
